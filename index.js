@@ -20,3 +20,14 @@ function cooldownAsync(callback, ms = 0) {
         }
     }
 }
+
+Object.defineProperties(module.exports, {
+    cooldown: {
+        value: cooldown,
+        enumerable: true
+    },
+    cooldownAsync: {
+        value: cooldownAsync,
+        enumerable: true
+    }
+});
