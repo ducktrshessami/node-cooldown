@@ -1,4 +1,15 @@
 declare module "cooldown" {
-    export function cooldown<T>(callback: (...args?: any[]) => T, ms: number): (...args?: any[]) => T | void;
-    export function cooldownAsync<T>(callback: (...args?: any[]) => Promise<T>, ms: number): (...args?: any[]) => Promise<T | void>;
+    type Callback<T> = (...args?: any[]) => T;
+    type AsyncCallback<T> = (...args?: any[]) => Promise<T>;
+
+    interface CooldownFunction<T> extends Callback<T | void> {
+        ready: Boolean;
+    }
+
+    interface CooldownAsyncFunction<T> extends AsyncCallback<T | void> {
+        ready: Boolean;
+    }
+
+    export function cooldown<T>(callback: Callback<T>, ms: number): CooldownFunction<T>;
+    export function cooldownAsync<T>(callback: AsyncCallback<T>, ms: number): CooldownAsyncFunction<T>;
 }
