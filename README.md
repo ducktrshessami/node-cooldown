@@ -1,2 +1,4 @@
 # node-cooldown
-Sure why not
+Wrap a function with a cooldown
+
+I needed an explicitly async version
