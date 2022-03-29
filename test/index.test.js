@@ -57,3 +57,72 @@ describe("cooldown", function () {
         assert(Math.abs(Date.now() - start - ms) < 50);
     }).slow(600).timeout(1000);
 });
+
+describe("cooldownAsync", function () {
+    it("always async", function () {
+        function foo() {
+            return true;
+        }
+        const bar = cooldownAsync(foo, 1000);
+        assert(bar() instanceof Promise);
+        assert(bar() instanceof Promise);
+    });
+    it("starts off cooldown", async function () {
+        async function foo() {
+            return true;
+        }
+        assert(await cooldownAsync(foo, 1000)());
+    });
+    it("same resolution as normal when off cooldown", async function () {
+        async function foo(input = "bar") {
+            const hash = crypto.createHash("sha256");
+            hash.write(input);
+            return hash
+                .digest()
+                .toString("utf8");
+        }
+        assert.strictEqual(await cooldownAsync(foo)(), await foo());
+    });
+    it("ensure 'this' integrity", async function () {
+        const obj = {
+            foo: 16,
+            async bar() {
+                return this.foo;
+            }
+        };
+        obj.foobar = cooldownAsync(obj.bar, 1000);
+        assert.strictEqual(await obj.foobar(), await obj.bar());
+    });
+    it("resolves with undefined while on cooldown", async function () {
+        const normal = "bar";
+        async function foo() {
+            return normal;
+        }
+        const foobar = cooldownAsync(foo, 1000);
+        assert.strictEqual(await foobar(), await foo());
+        assert.strictEqual(await foobar(), undefined);
+    });
+    it("comes off cooldown after expected time", async function () {
+        const ms = 500;
+        async function foo() {
+            return true;
+        }
+        const bar = cooldownAsync(foo, ms);
+        const start = Date.now();
+        await bar();
+        await new Promise(resolve => {
+            let interval = setInterval(async () => {
+                try {
+                    if (await bar()) {
+                        resolve();
+                        clearInterval(interval);
+                    }
+                }
+                catch {
+                    console.error(new Error("What"));
+                }
+            }, 1);
+        });
+        assert(Math.abs(Date.now() - start - ms) < 50);
+    }).slow(600).timeout(1000);
+});
