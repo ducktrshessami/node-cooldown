@@ -38,6 +38,15 @@ describe("cooldown", function () {
         assert.strictEqual(foobar(), foo());
         assert.strictEqual(foobar(), undefined);
     });
+    it("ready property tracks cooldown state", function () {
+        function foo() {
+            return true;
+        }
+        const bar = cooldown(foo, 1000);
+        assert.strictEqual(bar.ready, true);
+        bar();
+        assert.strictEqual(bar.ready, false);
+    });
     it("comes off cooldown after expected time", async function () {
         const ms = 500;
         function foo() {
@@ -101,6 +110,15 @@ describe("cooldownAsync", function () {
         const foobar = cooldownAsync(foo, 1000);
         assert.strictEqual(await foobar(), await foo());
         assert.strictEqual(await foobar(), undefined);
+    });
+    it("ready property tracks cooldown state", async function () {
+        async function foo() {
+            return true;
+        }
+        const bar = cooldownAsync(foo, 1000);
+        assert.strictEqual(bar.ready, true);
+        await bar();
+        assert.strictEqual(bar.ready, false);
     });
     it("comes off cooldown after expected time", async function () {
         const ms = 500;
