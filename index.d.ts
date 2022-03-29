@@ -1,6 +1,6 @@
 declare module "cooldown" {
-    type Callback<T> = (...args?: any[]) => T;
-    type AsyncCallback<T> = (...args?: any[]) => Promise<T>;
+    type Callback<T> = (...args: any[]) => T;
+    type AsyncCallback<T> = (...args: any[]) => Promise<T>;
 
     interface CooldownFunction<T> extends Callback<T | void> {
         ready: Boolean;
