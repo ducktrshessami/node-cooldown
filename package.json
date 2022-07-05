@@ -1,6 +1,6 @@
 {
   "name": "cooldown",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "I needed an existing one, but able to wrap async functions",
   "main": "index.js",
   "scripts": {
