@@ -9,7 +9,9 @@
   "author": "ducktrshessami",
   "license": "MIT",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "pretest": "yarn build",
+    "test": "mocha"
   },
   "exports": {
     "require": "./dist/index.js",
