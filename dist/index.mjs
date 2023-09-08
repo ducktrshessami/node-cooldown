@@ -1,0 +1,2 @@
+function a(t,o=0){let e=!0;function n(...r){if(e)return e=!1,setTimeout(()=>e=!0,o),t.apply(this,r)}return Object.defineProperty(n,"ready",{get:()=>e,enumerable:!0}),n}function u(t,o=0){let e=!0;async function n(...r){if(e)return e=!1,setTimeout(()=>e=!0,o),await t.apply(this,r)}return Object.defineProperty(n,"ready",{get:()=>e,enumerable:!0}),n}export{a as cooldown,u as cooldownAsync};
+//# sourceMappingURL=index.mjs.map

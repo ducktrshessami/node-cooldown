@@ -1,0 +1,26 @@
+{
+  "name": "cooldown",
+  "version": "1.0.1",
+  "description": "I needed an explicitly async cooldown function wrapper",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:ducktrshessami/node-cooldown.git",
+  "author": "ducktrshessami",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup",
+    "pretest": "yarn build",
+    "test": "mocha"
+  },
+  "exports": {
+    "require": "./dist/index.js",
+    "import": "./dist/index.mjs",
+    "types": "./dist/index.d.ts"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  }
+}
