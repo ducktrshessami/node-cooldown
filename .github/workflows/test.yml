@@ -2,13 +2,11 @@ name: Test
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -17,5 +15,5 @@ jobs:
         node-version: lts/*
     - name: install
       run: yarn --immutable
-    - name: build
+    - name: build and test
       run: yarn test
