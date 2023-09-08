@@ -21,13 +21,18 @@ describe("cooldown", function () {
     });
     it("ensure 'this' integrity", function () {
         const obj = {
-            foo: 16,
+            foo: 0,
             bar() {
                 return this.foo;
             }
         };
-        obj.foobar = cooldown(obj.bar, 1000);
-        assert.strictEqual(obj.foobar(), obj.bar());
+        const other = {
+            foo: 1,
+            bar: cooldown(obj.bar, 1000)
+        };
+        const bound = cooldown(obj.bar.bind(obj), 1000);
+        assert.strictEqual(other.bar(), other.foo);
+        assert.strictEqual(bound(), obj.foo);
     });
     it("returns undefined while on cooldown", function () {
         const normal = "bar";
@@ -94,13 +99,18 @@ describe("cooldownAsync", function () {
     });
     it("ensure 'this' integrity", async function () {
         const obj = {
-            foo: 16,
-            async bar() {
+            foo: 0,
+            bar() {
                 return this.foo;
             }
         };
-        obj.foobar = cooldownAsync(obj.bar, 1000);
-        assert.strictEqual(await obj.foobar(), await obj.bar());
+        const other = {
+            foo: 1,
+            bar: cooldownAsync(obj.bar, 1000)
+        };
+        const bound = cooldownAsync(obj.bar.bind(obj), 1000);
+        assert.strictEqual(await other.bar(), other.foo);
+        assert.strictEqual(await bound(), obj.foo);
     });
     it("resolves with undefined while on cooldown", async function () {
         const normal = "bar";
