@@ -1,6 +1,6 @@
 {
   "name": "cooldown",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "I needed an explicitly async cooldown function wrapper",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
