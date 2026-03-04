@@ -1,23 +1,23 @@
-const assert = require("assert");
-const crypto = require("crypto");
-const { cooldown, cooldownAsync } = require("../");
+import { createHash } from "crypto";
+import { describe, expect, it } from "vitest";
+import { cooldown, cooldownAsync } from "../dist/index";
 
 describe("cooldown", function () {
     it("starts off cooldown", function () {
         function foo() {
             return true;
         }
-        assert(cooldown(foo, 1000)());
+        expect(cooldown(foo, 1000)()).toEqual(true);
     });
     it("same return as normal when off cooldown", function () {
         function foo(input = "bar") {
-            const hash = crypto.createHash("sha256");
+            const hash = createHash("sha256");
             hash.write(input);
             return hash
                 .digest()
                 .toString("utf8");
         }
-        assert.strictEqual(cooldown(foo)(), foo());
+        expect(cooldown(foo)()).toEqual(foo());
     });
     it("ensure 'this' integrity", function () {
         const obj = {
@@ -31,8 +31,8 @@ describe("cooldown", function () {
             bar: cooldown(obj.bar, 1000)
         };
         const bound = cooldown(obj.bar.bind(obj), 1000);
-        assert.strictEqual(other.bar(), other.foo);
-        assert.strictEqual(bound(), obj.foo);
+        expect(other.bar()).toEqual(other.foo);
+        expect(bound()).toEqual(obj.foo);
     });
     it("returns undefined while on cooldown", function () {
         const normal = "bar";
@@ -40,17 +40,17 @@ describe("cooldown", function () {
             return normal;
         }
         const foobar = cooldown(foo, 1000);
-        assert.strictEqual(foobar(), foo());
-        assert.strictEqual(foobar(), undefined);
+        expect(foobar()).toEqual(foo());
+        expect(foobar()).toEqual(undefined);
     });
     it("ready property tracks cooldown state", function () {
         function foo() {
             return true;
         }
         const bar = cooldown(foo, 1000);
-        assert.strictEqual(bar.ready, true);
+        expect(bar.ready).toEqual(true);
         bar();
-        assert.strictEqual(bar.ready, false);
+        expect(bar.ready).toEqual(false);
     });
     it("comes off cooldown after expected time", async function () {
         const ms = 500;
@@ -60,7 +60,7 @@ describe("cooldown", function () {
         const bar = cooldown(foo, ms);
         const start = Date.now();
         bar();
-        await new Promise(resolve => {
+        await new Promise<void>(resolve => {
             let interval = setInterval(() => {
                 if (bar()) {
                     resolve();
@@ -68,8 +68,8 @@ describe("cooldown", function () {
                 }
             }, 1);
         });
-        assert(Math.abs(Date.now() - start - ms) < 50);
-    }).slow(600).timeout(1000);
+        expect(Math.abs(Date.now() - start - ms)).toBeLessThan(50);
+    })
 });
 
 describe("cooldownAsync", function () {
@@ -78,24 +78,24 @@ describe("cooldownAsync", function () {
             return true;
         }
         const bar = cooldownAsync(foo, 1000);
-        assert(bar() instanceof Promise);
-        assert(bar() instanceof Promise);
+        expect(bar()).toBeInstanceOf(Promise);
+        expect(bar()).toBeInstanceOf(Promise);
     });
     it("starts off cooldown", async function () {
         async function foo() {
             return true;
         }
-        assert(await cooldownAsync(foo, 1000)());
+        expect(await cooldownAsync(foo, 1000)()).toEqual(true);
     });
     it("same resolution as normal when off cooldown", async function () {
         async function foo(input = "bar") {
-            const hash = crypto.createHash("sha256");
+            const hash = createHash("sha256");
             hash.write(input);
             return hash
                 .digest()
                 .toString("utf8");
         }
-        assert.strictEqual(await cooldownAsync(foo)(), await foo());
+        expect(await cooldownAsync(foo)()).toEqual(await foo());
     });
     it("ensure 'this' integrity", async function () {
         const obj = {
@@ -109,8 +109,8 @@ describe("cooldownAsync", function () {
             bar: cooldownAsync(obj.bar, 1000)
         };
         const bound = cooldownAsync(obj.bar.bind(obj), 1000);
-        assert.strictEqual(await other.bar(), other.foo);
-        assert.strictEqual(await bound(), obj.foo);
+        expect(await other.bar()).toEqual(other.foo);
+        expect(await bound()).toEqual(obj.foo);
     });
     it("resolves with undefined while on cooldown", async function () {
         const normal = "bar";
@@ -118,17 +118,17 @@ describe("cooldownAsync", function () {
             return normal;
         }
         const foobar = cooldownAsync(foo, 1000);
-        assert.strictEqual(await foobar(), await foo());
-        assert.strictEqual(await foobar(), undefined);
+        expect(await foobar()).toEqual(await foo());
+        expect(await foobar()).toEqual(undefined);
     });
     it("ready property tracks cooldown state", async function () {
         async function foo() {
             return true;
         }
         const bar = cooldownAsync(foo, 1000);
-        assert.strictEqual(bar.ready, true);
+        expect(bar.ready).toEqual(true);
         await bar();
-        assert.strictEqual(bar.ready, false);
+        expect(bar.ready).toEqual(false);
     });
     it("comes off cooldown after expected time", async function () {
         const ms = 500;
@@ -138,7 +138,7 @@ describe("cooldownAsync", function () {
         const bar = cooldownAsync(foo, ms);
         const start = Date.now();
         await bar();
-        await new Promise(resolve => {
+        await new Promise<void>(resolve => {
             let interval = setInterval(async () => {
                 try {
                     if (await bar()) {
@@ -151,6 +151,6 @@ describe("cooldownAsync", function () {
                 }
             }, 1);
         });
-        assert(Math.abs(Date.now() - start - ms) < 50);
-    }).slow(600).timeout(1000);
+        expect(Math.abs(Date.now() - start - ms)).toBeLessThan(50);
+    })
 });
